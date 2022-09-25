@@ -1,6 +1,6 @@
 {
   "name": "@globules-io/cordova-plugin-android-remove-permissions",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Cordova remove unwanted permissions for Anfroid",
   "cordova": {
     "id": "@globules-io/cordova-plugin-android-remove-permissions",
