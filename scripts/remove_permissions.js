@@ -17,14 +17,14 @@ xml2js.parseStringPromise(configXml).then(function(result){
 	}
 	if(unwantedPermissions.length){            
         const manifestPath = root + '/platforms/android/app/src/main/AndroidManifest.xml';
-            const manifestXml = await fs.readFile(manifestPath);
-            const manifest = await xml2js.parseStringPromise(manifestXml);
-            const usesPermissions = manifest.manifest['uses-permission'];
-            if(Array.isArray(usesPermissions)) {
+        const manifestXml = await fs.readFile(manifestPath);
+        const manifest = await xml2js.parseStringPromise(manifestXml);
+        const usesPermissions = manifest.manifest['uses-permission'];
+        if(Array.isArray(usesPermissions)){
             manifest.manifest['uses-permission'] = usesPermissions.filter(usesPermission => {
                 const attrs = usesPermission.$ || {};
                 const name = attrs['android:name'] ;
-                if (unwantedPermissions.includes('android.permission.'+name)){
+                if(unwantedPermissions.includes('android.permission.'+name)){
                     permissionRemoved.push(name);				
                     return false;
                 }else{
@@ -37,6 +37,6 @@ xml2js.parseStringPromise(configXml).then(function(result){
         //Save
         const newManifest = (new xml2js.Builder()).buildObject(manifest);
         fs.writeFileSync(manifestPath, newManifest);	
-    }
+    }   
 		
 });
