@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-    id="@globules-io/cordova-plugin-android-remove-permissions" version="0.0.3">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="@globules-io/cordova-plugin-android-remove-permissions" version="1.0.0">
     <name>Cordova Plugin Android Remove Permissions</name>
     <description>This plugin removes unwanted permissions on Android</description>
     <license>MIT</license> 
     <keywords>cordova,android,permission</keywords>
     <repo>https://github.com/globules-io/cordova-plugin-android-remove-permissions.git</repo>    
     <platform name="android">
-		  <hook type="before_build" src="scripts/remove_permissions.js" />
+		  <hook type="after_prepare" src="scripts/remove_permissions.js" />
     </platform>
 </plugin>
