@@ -17,7 +17,7 @@ module.exports = async function(context) {
             }		 
         }
         for(let i = 0; i < unwantedPermissions.length; i++){
-            unwantedPermissions[i] = 'android.permission.'+unwantedPermissions[i];
+            unwantedPermissions[i] = 'android.permission.'+unwantedPermissions[i].trim();
         }
         if(unwantedPermissions.length){            
             const manifestPath = root + '/platforms/android/app/src/main/AndroidManifest.xml';
