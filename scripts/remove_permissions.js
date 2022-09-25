@@ -17,8 +17,8 @@ xml2js.parseStringPromise(configXml).then(function(result){
 	}
 	if(unwantedPermissions.length){            
         const manifestPath = root + '/platforms/android/app/src/main/AndroidManifest.xml';
-        const manifestXml = await fs.readFile(manifestPath);
-        const manifest = await xml2js.parseStringPromise(manifestXml);
+        const manifestXml = fs.readFileSync(manifestPath);
+        const manifest = xml2js.parseString(manifestXml);
         const usesPermissions = manifest.manifest['uses-permission'];
         if(Array.isArray(usesPermissions)){
             manifest.manifest['uses-permission'] = usesPermissions.filter(usesPermission => {
