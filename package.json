@@ -15,7 +15,7 @@
   "keywords": [
     "cordova",
     "ecosystem:cordova",
-    "cordova-ios"
+    "cordova-android"
   ],
   "scripts": {
    
