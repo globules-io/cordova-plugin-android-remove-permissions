@@ -16,8 +16,12 @@ module.exports = async function(context) {
                 break;
             }		 
         }
+        let perm;
         for(let i = 0; i < unwantedPermissions.length; i++){
-            unwantedPermissions[i] = 'android.permission.'+unwantedPermissions[i].trim();
+            perm = unwantedPermissions[i].trim();
+            if(perm.indexOf('.') === -1){
+                unwantedPermissions[i] = 'android.permission.'+perm;
+            }
         }
         if(unwantedPermissions.length){            
             const manifestPath = root + '/platforms/android/app/src/main/AndroidManifest.xml';
