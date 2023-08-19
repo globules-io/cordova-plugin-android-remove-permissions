@@ -23,25 +23,31 @@ module.exports = async function(context) {
                 unwantedPermissions[i] = 'android.permission.'+perm;
             }
         }
-        if(unwantedPermissions.length){            
-            const manifestPath = root + '/platforms/android/app/src/main/AndroidManifest.xml';
-            const manifestXml = fs.readFileSync(manifestPath);       
-            xml2js.parseString(manifestXml, function(__err, __res){
-                manifest = __res;
-                const usesPermissions = manifest.manifest['uses-permission'];
-                if(Array.isArray(usesPermissions)){
-                    manifest.manifest['uses-permission'] = usesPermissions.filter(usesPermission => {
-                        const attrs = usesPermission.$ || {};
-                        const name = attrs['android:name'] ;                       
-                        if(unwantedPermissions.includes(name)){
-                            permissionRemoved.push(name);				
-                            return false;
-                        }else{
-                            return true;
-                        }
-                    });
-                }
-            });        
+        if(unwantedPermissions.length){        
+            const paths = ['/platforms/android/app/src/main/', '/platforms/android/app/build/intermediates/merged_manifest/debug/', '/platforms/android/app/build/intermediates/merged_manifest/release/'];
+            let manifestPath, manifestXml;
+            paths.forEach(path => {  
+                manifestPath = root + path + 'AndroidManifest.xml';
+                manifestXml = fs.readFileSync(manifestPath);       
+                xml2js.parseString(manifestXml, function(__err, __res){
+                    manifest = __res;
+                    let usesPermissions = manifest.manifest['uses-permission'];
+                    if(Array.isArray(usesPermissions)){
+                        manifest.manifest['uses-permission'] = usesPermissions.filter(usesPermission => {
+                            let attrs = usesPermission.$ || {};
+                            let name = attrs['android:name'] ; 
+                            if(unwantedPermissions.includes(name)){
+                                if(!permissionRemoved.includes(name)){
+                                    permissionRemoved.push(name);	
+                                }			
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        });
+                    }
+                }); 
+            }); 
             //log
             console.log('cordova-plugin-android-remove-permissions found and removed ', permissionRemoved.length, 'permissions: ', permissionRemoved.join(', '), 'expected:', unwantedPermissions.join(', '));
             //Save
