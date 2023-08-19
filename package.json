@@ -1,6 +1,6 @@
 {
   "name": "@globules-io/cordova-plugin-android-remove-permissions",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Cordova remove unwanted permissions for Anfroid",
   "cordova": {
     "id": "@globules-io/cordova-plugin-android-remove-permissions",
@@ -17,9 +17,10 @@
     "ecosystem:cordova",
     "cordova-android"
   ],
-  "scripts": {
-   
-  },
+  "scripts": {},
   "author": "globules.io",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "xml2js": "^0.6.2"
+  }
 }
