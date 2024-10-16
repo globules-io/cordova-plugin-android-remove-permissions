@@ -24,35 +24,40 @@ module.exports = async function(context) {
             }
         }
         if(unwantedPermissions.length){        
-            const paths = ['/platforms/android/app/src/main/', '/platforms/android/app/build/intermediates/merged_manifest/debug/', '/platforms/android/app/build/intermediates/merged_manifest/release/'];
+            const paths = ['/platforms/android/app/src/main/', '/platforms/android/app/build/intermediates/merged_manifest/debug/processDebugMainManifest/', '/platforms/android/app/build/intermediates/merged_manifest/release/processReleaseMainManifest/'];
             let manifestPath, manifestXml;
             paths.forEach(path => {  
                 manifestPath = root + path + 'AndroidManifest.xml';
-                manifestXml = fs.readFileSync(manifestPath);       
-                xml2js.parseString(manifestXml, function(__err, __res){
-                    manifest = __res;
-                    let usesPermissions = manifest.manifest['uses-permission'];
-                    if(Array.isArray(usesPermissions)){
-                        manifest.manifest['uses-permission'] = usesPermissions.filter(usesPermission => {
-                            let attrs = usesPermission.$ || {};
-                            let name = attrs['android:name'] ; 
-                            if(unwantedPermissions.includes(name)){
-                                if(!permissionRemoved.includes(name)){
-                                    permissionRemoved.push(name);	
-                                }			
-                                return false;
-                            }else{
-                                return true;
+                if(fs.existsSync(manifestPath)){
+                    manifestXml = fs.readFileSync(manifestPath);   
+                    if(manifestXml){ 
+                        xml2js.parseString(manifestXml, function(__err, __res){
+                            manifest = __res;
+                            let usesPermissions = manifest.manifest['uses-permission'];
+                            if(Array.isArray(usesPermissions)){
+                                manifest.manifest['uses-permission'] = usesPermissions.filter(usesPermission => {
+                                    let attrs = usesPermission.$ || {};
+                                    let name = attrs['android:name'] ; 
+                                    if(unwantedPermissions.includes(name)){
+                                        if(!permissionRemoved.includes(name)){
+                                            permissionRemoved.push(name);	
+                                        }			
+                                        return false;
+                                    }else{
+                                        return true;
+                                    }
+                                });
                             }
-                        });
+                        }); 
+                        //Save
+                        const newManifest = (new xml2js.Builder()).buildObject(manifest);          
+                        fs.writeFileSync(manifestPath, newManifest);        
                     }
-                }); 
+                }
+                
             }); 
             //log
             console.log('cordova-plugin-android-remove-permissions found and removed ', permissionRemoved.length, 'permissions: ', permissionRemoved.join(', '), 'expected:', unwantedPermissions.join(', '));
-            //Save
-            const newManifest = (new xml2js.Builder()).buildObject(manifest);
-            fs.writeFileSync(manifestPath, newManifest);        
         };
     });
 
